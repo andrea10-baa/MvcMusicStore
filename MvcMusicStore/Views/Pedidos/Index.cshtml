@@ -1,0 +1,46 @@
+﻿@using System.Linq
+@model IEnumerable<MvcMusicStore.Models.PedidoResumen>
+
+@{
+    ViewBag.Title = "Pedidos";
+    bool isAdmin = User.IsInRole("Administrator");
+}
+
+<h2>@(isAdmin ? "Todos los pedidos" : "Mis compras")</h2>
+
+@if (!Model.Any())
+{
+    <p>Todavía no hay compras. @Html.ActionLink("Ir a la tienda", "Index", "Store")</p>
+}
+else
+{
+    <table>
+        <tr>
+            <th>Orden</th>
+            <th>Fecha</th>
+            @if (isAdmin)
+            {
+                <th>Cliente</th>
+            }
+            <th>Álbumes</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>#@p.OrderId</td>
+                <td>@p.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                @if (isAdmin)
+                {
+                    <td>@p.Username</td>
+                }
+                <td>@p.Items</td>
+                <td>@("Q" + p.Total.ToString("0.00"))</td>
+                <td class="text-end">
+                    @Html.ActionLink("Ver detalle", "Details", new { id = p.OrderId }, new { @class = "btn btn-sm btn-outline-dark" })
+                </td>
+            </tr>
+        }
+    </table>
+}

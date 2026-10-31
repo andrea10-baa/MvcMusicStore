@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<div class="auth-box">
+    <h2>Iniciar Sesión</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    @using (Html.BeginForm())
+    {
+        <div class="mb-3">
+            <label class="form-label">Usuario</label>
+            @Html.TextBox("userName", null, new { @class = "form-control" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            @Html.Password("password", null, new { @class = "form-control" })
+        </div>
+        <input type="hidden" name="returnUrl" value="@Request.QueryString["ReturnUrl"]" />
+        <input type="submit" value="Ingresar" class="btn btn-primary w-100" />
+    }
+
+    <p class="mt-3 mb-0 text-center">
+        ¿No tenés cuenta? @Html.ActionLink("Registrate acá", "Register")
+    </p>
+</div>

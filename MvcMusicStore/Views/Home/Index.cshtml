@@ -1,0 +1,75 @@
+﻿@model List<MvcMusicStore.Models.Album>
+@using MvcMusicStore.Models
+@using System.Linq
+
+@{
+    ViewBag.Title = "Inicio";
+    var genres = ViewBag.Genres as List<Genre> ?? new List<Genre>();
+}
+
+<section class="hero">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+            <img class="hero-logo" src="@Url.Content("~/Content/logo-discos.jpeg")" alt="MVC Music Store" />
+            <span class="hero-tag">Tienda de música</span>
+            <h1>Encontrá tu próximo disco favorito</h1>
+            <p>Explorá por género, descubrí artistas y llevate la música que te gusta. Hoy la promoción es de regalo: usá el código <strong>FREE</strong> al pagar.</p>
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Store")">Explorar la tienda</a>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="btn-outline-light-soft ms-2" href="@Url.Action("Register", "Account")">Crear cuenta</a>
+            }
+        </div>
+        <div class="col-lg-6">
+            <img class="hero-banner" src="@Url.Content("~/Content/banner-oferta.jpeg")" alt="Oferta de música" />
+        </div>
+    </div>
+</section>
+
+<div class="features">
+    <div><strong> ¡Promo FREE!!</strong><span>Música gratis con el código al pagar</span></div>
+    <div><strong>Compra rápida</strong><span>Carrito y checkout en pocos pasos</span></div>
+    <div><strong>Todos los géneros</strong><span>Rock, pop, urbano y mucho más</span></div>
+</div>
+
+@if (genres.Any())
+{
+    <div class="section-head">
+        <h3 class="section-title">Explorá por género</h3>
+        <a href="@Url.Action("Index", "Store")">Ver todos &raquo;</a>
+    </div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+        @foreach (var genre in genres)
+        {
+            <div class="col">
+                <a class="genre-tile" style="background:@CoverStyle.Gradient(genre.GenreId);" href="@Url.Action("Browse", "Store", new { genre = genre.Name })">
+                    <span>@genre.Name</span>
+                </a>
+            </div>
+        }
+    </div>
+}
+
+<div class="section-head">
+    <h3 class="section-title">Destacados de la tienda</h3>
+</div>
+
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+    @foreach (var album in Model)
+    {
+        <div class="col">
+            <a class="album-card" href="@Url.Action("Details", "Store", new { id = album.AlbumId })">
+                @if (album.Genre != null)
+                {
+                    <span class="album-chip">@album.Genre.Name</span>
+                }
+                @Html.Partial("_AlbumCover", album)
+                <div class="album-info">
+                    <div class="album-title">@album.Title</div>
+                    <div class="album-artist">@(album.Artist != null ? album.Artist.Name : "")</div>
+                    <div class="album-price">@("Q" + album.Price.ToString("0.00"))</div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

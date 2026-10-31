@@ -1,0 +1,60 @@
+﻿@model MvcMusicStore.Models.Album
+@using MvcMusicStore.Models
+
+@{
+    ViewBag.Title = Model.Title;
+
+    var related = new List<Album>();
+    if (Model.Genre != null && Model.Genre.Albums != null)
+    {
+        related = Model.Genre.Albums.Where(a => a.AlbumId != Model.AlbumId).Take(4).ToList();
+    }
+}
+
+<div class="row g-4 align-items-start">
+    <div class="col-12 col-md-5 col-lg-4">
+        <div class="cover-lg">
+            @Html.Partial("_AlbumCover", Model)
+        </div>
+    </div>
+
+    <div class="col-12 col-md-7 col-lg-8">
+        <h2 class="section-title" style="margin-top:0;">@Model.Title</h2>
+
+        <p class="mb-2">
+            <strong>Género:</strong>
+            @Html.ActionLink(Model.Genre.Name, "Browse", "Store", new { genre = Model.Genre.Name }, null)
+        </p>
+        <p class="mb-2">
+            <strong>Artista:</strong> @Model.Artist.Name
+        </p>
+        <p class="album-price" style="font-size:1.9rem;">
+            @("Q" + Model.Price.ToString("0.00"))
+        </p>
+
+        <p class="mt-4">
+            @Html.ActionLink("Agregar al carrito", "AddToCart", "Cart", new { id = Model.AlbumId }, new { @class = "btn btn-primary btn-lg" })
+            @Html.ActionLink("Volver a la tienda", "Index", "Store", null, new { @class = "btn btn-outline-dark btn-lg" })
+        </p>
+    </div>
+</div>
+
+@if (related.Any())
+{
+    <h3 class="section-title">Más de @Model.Genre.Name</h3>
+    <div class="row row-cols-2 row-cols-md-4 g-3">
+        @foreach (var album in related)
+        {
+            <div class="col">
+                <a class="album-card" href="@Url.Action("Details", "Store", new { id = album.AlbumId })">
+                    @Html.Partial("_AlbumCover", album)
+                    <div class="album-info">
+                        <div class="album-title">@album.Title</div>
+                        <div class="album-artist">@(album.Artist != null ? album.Artist.Name : "")</div>
+                        <div class="album-price">@("Q" + album.Price.ToString("0.00"))</div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

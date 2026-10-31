@@ -1,0 +1,44 @@
+﻿@using System.Linq
+@model IEnumerable<MvcMusicStore.Models.OrderDetail>
+
+@{
+    var order = (MvcMusicStore.Models.Order)ViewBag.Order;
+    ViewBag.Title = "Pedido #" + order.OrderId;
+}
+
+<h2>Pedido #@order.OrderId</h2>
+<p><strong>Fecha:</strong> @order.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+<p><strong>Enviado a:</strong> @order.FirstName @order.LastName, @order.Address, @order.City, @order.State, @order.Country</p>
+
+<table>
+    <tr>
+        <th>Álbum</th>
+        <th>Precio (c/u)</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+    </tr>
+    @foreach (var d in Model)
+    {
+        <tr>
+            <td>
+                <img src="@Url.Content(MvcMusicStore.Models.AlbumArt.Resolve(d.Album.AlbumArtUrl))"
+                     alt="@d.Album.Title"
+                     style="width:60px; height:60px; object-fit:cover; border-radius:8px; margin-right:12px; vertical-align:middle;" />
+                @Html.ActionLink(d.Album.Title, "Details", "Store", new { id = d.AlbumId }, null)
+            </td>
+            <td>@("Q" + d.UnitPrice.ToString("0.00"))</td>
+            <td>@d.Quantity</td>
+            <td>@("Q" + (d.UnitPrice * d.Quantity).ToString("0.00"))</td>
+        </tr>
+    }
+    <tr>
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>@("Q" + Model.Sum(d => d.UnitPrice * d.Quantity).ToString("0.00"))</strong></td>
+    </tr>
+</table>
+
+<p class="mt-4">
+    @Html.ActionLink("Volver", "Index", null, new { @class = "btn btn-outline-dark" })
+</p>

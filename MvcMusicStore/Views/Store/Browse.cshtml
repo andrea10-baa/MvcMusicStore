@@ -1,0 +1,37 @@
+﻿@model MvcMusicStore.Models.Genre
+@using MvcMusicStore.Models
+
+@{
+    ViewBag.Title = Model.Name;
+    var albums = Model.Albums == null ? new List<Album>() : Model.Albums.ToList();
+}
+
+<div class="genre-hero" style="background:@CoverStyle.Gradient(Model.GenreId);">
+    <h2>@Model.Name</h2>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <p>@Model.Description</p>
+    }
+    <p>@albums.Count @(albums.Count == 1 ? "álbum" : "álbumes")</p>
+</div>
+
+@if (albums.Count == 0)
+{
+    <p class="text-muted">Todavía no hay álbumes en este género.</p>
+}
+
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+    @foreach (var album in albums)
+    {
+        <div class="col">
+            <a class="album-card" href="@Url.Action("Details", "Store", new { id = album.AlbumId })">
+                @Html.Partial("_AlbumCover", album)
+                <div class="album-info">
+                    <div class="album-title">@album.Title</div>
+                    <div class="album-artist">@(album.Artist != null ? album.Artist.Name : "")</div>
+                    <div class="album-price">@("Q" + album.Price.ToString("0.00"))</div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

@@ -1,0 +1,53 @@
+﻿@model MvcMusicStore.Models.Album
+
+@{
+    ViewBag.Title = "Crear álbum";
+}
+
+<div class="auth-box" style="max-width:640px;">
+    <h2>Crear álbum</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.GenreId, "Género", new { @class = "form-label" })
+            @Html.DropDownList("GenreId", null, new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.GenreId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.ArtistId, "Artista", new { @class = "form-label" })
+            @Html.DropDownList("ArtistId", null, new { @class = "form-select" })
+            @Html.ValidationMessageFor(model => model.ArtistId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.Title, "Título", new { @class = "form-label" })
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.Price, "Precio", new { @class = "form-label" })
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.AlbumArtUrl, "Portada (ruta de la imagen)", new { @class = "form-label" })
+            @Html.EditorFor(model => model.AlbumArtUrl, new { htmlAttributes = new { @class = "form-control", placeholder = "/Content/albums/mi-portada.jpg" } })
+            @Html.ValidationMessageFor(model => model.AlbumArtUrl, "", new { @class = "text-danger" })
+            <div class="form-text">Si lo dejás vacío se usa la imagen de reemplazo.</div>
+        </div>
+
+        <input type="submit" value="Crear" class="btn btn-primary" />
+        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-dark" })
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

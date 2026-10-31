@@ -1,0 +1,82 @@
+﻿@using System.Linq
+@model MvcMusicStore.Models.ShoppingCartViewModel
+
+@{
+    ViewBag.Title = "Carrito de compras";
+}
+
+<h3 class="section-title">
+    <em>Revisá</em> tu carrito de compras
+</h3>
+
+<div id="update-message" class="text-success fw-semibold mb-2"></div>
+
+<table>
+    <tr>
+        <th>Álbum</th>
+        <th>Precio (c/u)</th>
+        <th>Cantidad</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.CartItems)
+    {
+        <tr id="row-@item.RecordId">
+            <td>
+                <span class="cover-thumb">@Html.Partial("_AlbumCover", item.Album)</span>
+                @Html.ActionLink(item.Album.Title, "Details", "Store", new { id = item.AlbumId }, null)
+            </td>
+            <td id="item-price-@item.RecordId">
+                @("Q" + item.Album.Price.ToString("0.00"))
+            </td>
+            <td id="item-count-@item.RecordId">
+                @item.Count
+            </td>
+            <td class="text-end">
+                <a href="#" class="RemoveLink btn btn-sm btn-outline-danger" data-id="@item.RecordId">Quitar</a>
+            </td>
+        </tr>
+    }
+    <tr>
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td class="text-end"><strong id="cart-total">@("Q" + Model.CartTotal.ToString("0.00"))</strong></td>
+    </tr>
+</table>
+
+<p class="mt-4">
+    @Html.ActionLink("Seguir comprando", "Index", "Store", null, new { @class = "btn btn-outline-dark" })
+    @if (Model.CartItems.Any())
+    {
+        @Html.ActionLink("Checkout >>", "AddressAndPayment", "Checkout", null, new { @class = "btn btn-primary", id = "checkout-link" })
+    }
+</p>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $(".RemoveLink").click(function () {
+                var link = $(this);
+                var recordToDelete = link.attr("data-id");
+
+                $.post("/Cart/RemoveFromCart", { id: recordToDelete },
+                    function (data) {
+                        if (data.ItemCount == 0) {
+                            $('#row-' + data.DeleteId).remove();
+                        } else {
+                            $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                        }
+                        $('#cart-total').text('Q' + Number(data.CartTotal).toFixed(2));
+                        $('#update-message').text(data.Message);
+                        $('#cart-status').text('Carrito (' + data.CartCount + ')');
+
+                        if (data.CartCount == 0) {
+                            $('#checkout-link').remove();
+                        }
+                    });
+
+                return false;
+            });
+        });
+    </script>
+}

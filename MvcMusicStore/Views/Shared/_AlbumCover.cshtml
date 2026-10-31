@@ -1,0 +1,21 @@
+﻿@model MvcMusicStore.Models.Album
+@using MvcMusicStore.Models
+
+@{
+    // Usa tu AlbumArt.Resolve: si devuelve el placeholder, se genera la portada de color
+    string resolved = AlbumArt.Resolve(Model.AlbumArtUrl) ?? "";
+    bool hasImage = resolved.IndexOf("sample-placeholder", StringComparison.OrdinalIgnoreCase) < 0;
+    string artist = Model.Artist != null ? Model.Artist.Name : "";
+}
+
+@if (hasImage)
+{
+    <img class="cover-img" src="@Url.Content(resolved)" alt="@Model.Title" />
+}
+else
+{
+    <div class="cover-gen" style="background:@CoverStyle.Gradient(Model.GenreId);" role="img" aria-label="@Model.Title">
+        <span class="cover-initials">@CoverStyle.Initials(Model.Title)</span>
+        <span class="cover-artist">@artist</span>
+    </div>
+}

@@ -1,0 +1,20 @@
+﻿@model IEnumerable<MvcMusicStore.Models.Artist>
+
+@{
+    ViewBag.Title = "Artistas";
+}
+
+<h2>Artistas</h2>
+<p>@Html.ActionLink("Crear artista", "Create")</p>
+
+<table>
+    <tr>
+        <th>Nombre</th>
+    </tr>
+    @foreach (var artist in Model)
+    {
+        <tr>
+            <td>@artist.Name</td>
+        </tr>
+    }
+</table>
